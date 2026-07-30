@@ -63,8 +63,12 @@ def build_jobs(args):
     jobs = []
     if args.which in ("usability", "both"):
         spec = json.load(open(args.usability_json))
-        tiers = args.tiers or spec["meta"]["resolution_tiers"]
+        meta = spec["meta"]
+        sweep_groups = set(meta.get("sweep_groups", []))
+        default_tier = meta.get("default_tier", 1024)
         for p in spec["prompts"]:
+            # the full resolution sweep applies only to sweep_groups; others get the default tier
+            tiers = args.tiers or (meta["resolution_tiers"] if p["group"] in sweep_groups else [default_tier])
             for tier in tiers:
                 w, h = dims_for(p["aspect"], tier)
                 jobs.append(("usability", f"{p['id']}_{tier}", p["prompt"], p["seed"], w, h,

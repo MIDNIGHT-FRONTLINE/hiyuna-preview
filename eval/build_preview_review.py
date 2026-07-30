@@ -124,14 +124,18 @@ def main():
 
     # ---------- usability ----------
     out.append("<h2>Usability set v2</h2>")
+    sweep_groups = set(umeta.get("sweep_groups", []))
+    default_tier = umeta.get("default_tier", 1024)
     for gname, prompts in groups.items():
+        # the resolution sweep applies only to sweep_groups; the rest are 1024-only rows
+        group_tiers = tiers if gname in sweep_groups else [default_tier]
         out.append(f"<h3>{html.escape(gname)} — {html.escape(umeta['groups'][gname])}</h3>")
         out.append('<div class="scroll"><table>')
         out.append("<tr><th></th>" + "".join(
             f'<th>{html.escape(p["id"])}<br><span class="meta">seed {p["seed"]} · '
             f'{p["aspect"][0]}:{p["aspect"][1]}</span></th>' for p in prompts) + "</tr>")
         for name in names:
-            for tier in tiers:
+            for tier in group_tiers:
                 oob = " oob" if tier > 1024 else ""
                 label = (f'<th class="rowh{oob}"><span class="tier">{tier}</span>'
                          f'<span class="meta">{html.escape(name)}'
