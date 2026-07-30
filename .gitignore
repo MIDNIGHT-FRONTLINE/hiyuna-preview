@@ -1,0 +1,52 @@
+# ---------------------------------------------------------------------------
+# This repo publishes CODE + METHOD only.
+#
+# Nothing that is content ships here: no prompts, no captions, no tag strings,
+# no artist names, no post ids, no pixels, no generated samples, no logs, and
+# nothing adult-rated. Files listed below stay on the training machine only —
+# several are still required at run time, they are just never committed.
+# ---------------------------------------------------------------------------
+
+# --- prompt sets and prompt text (frozen eval inputs; used by the run) -------
+eval/usability_set_v2.json
+eval/style_swap_set.json
+eval/test_prompt.md
+eval/*_set*.json
+eval/*prompt*.md
+eval/*prompt*.json
+
+# --- caption materials + anything that quotes captions or tag literals -------
+# The profile implementation, its config and the verifier are withheld too: they
+# embed the content-rating taxonomy and tag-family literals as functional
+# constants. They hold no captions, ids or dataset rows — the method itself is
+# documented in caption/PROFILE.md. All three are still required at run time.
+caption/preview_materials.sqlite
+caption/*.sqlite
+caption/*.db
+caption/verify_report.txt
+caption/verify_preview_caption_synth.py
+caption/krea2_caption_synth.snapshot.py
+caption/caption_synth_preview_config.json
+caption/TASK1_SUMMARY.md
+
+# --- training data and latent cache (private dataset pixels / derivatives) ---
+train/dataset/
+train/cache/
+
+# --- checkpoints and optimizer states (25.8 GB each) ------------------------
+train/ckpt/
+*.safetensors
+*.pt
+*.bin
+
+# --- run logs (per-step captions, post ids, local paths) --------------------
+logs/
+
+# --- generated eval images, thumbnails, review pages -----------------------
+eval/outputs/
+
+# --- python ----------------------------------------------------------------
+__pycache__/
+*.py[cod]
+.venv/
+venv/

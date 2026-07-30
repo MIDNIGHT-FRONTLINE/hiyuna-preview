@@ -1,0 +1,14 @@
+Hiyuna — preview fine-tune stage
+Copyright 2026 MIDNIGHT-FRONTLINE
+
+This project's training code is developed as a fork of musubi-tuner
+(https://github.com/kohya-ss/musubi-tuner), whose code outside its vendored model
+directories is licensed under the Apache License, Version 2.0. The fork's trainer
+and model code is not vendored into this repository; only the preview stage's own
+orchestration, data-preparation and evaluation code is published here.
+
+The training dataset (a hand-curated anime keep set) is PRIVATE. Neither it nor
+any derivative of it — captions, tag strings, artist names, post ids, or pixels —
+is included in or redistributable through this repository, and neither are the
+run's frozen prompt sets, generated samples, logs, or checkpoints. See .gitignore
+for the exact exclusions.

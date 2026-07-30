@@ -1,0 +1,22 @@
+# Preview FT dataset — hand-curated keep set, frozen 2026-07-30T09:19:58 (9,439 images).
+# Source: H4RUming/hiyuna-curation-internal body parquet, extracted verbatim by
+# extract_images.py to dataset/images/<id>.webp (stem = id = trainer item_key).
+#
+# Single layer, num_repeats = 1: the whole set is top curation, so no year weighting and no
+# coverage layer (unlike the full-FT pilot). 9439 / batch 4 = 2360 steps/epoch, x3 = 7080 steps.
+#
+# Captions: no .txt sidecars — --te_online + krea2_caption_synth (preview profile) synthesizes
+# them at run time from caption/preview_materials.sqlite.
+#
+# 1024^2 single resolution with aspect bucketing (pilot recipe). No resolution curriculum.
+
+[general]
+resolution = [1024, 1024]
+batch_size = 4
+enable_bucket = true
+bucket_no_upscale = false
+
+[[datasets]]
+image_directory = "/home/haru/Desktop/ft-preview/train/dataset/images"
+cache_directory = "/home/haru/Desktop/ft-preview/train/cache"
+num_repeats = 1
