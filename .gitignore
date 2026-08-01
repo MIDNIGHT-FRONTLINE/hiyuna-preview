@@ -7,13 +7,13 @@
 # several are still required at run time, they are just never committed.
 # ---------------------------------------------------------------------------
 
-# --- prompt sets and prompt text (frozen eval inputs; used by the run) -------
-eval/usability_set_v2.json
-eval/style_swap_set.json
-eval/test_prompt.md
-eval/*_set*.json
-eval/*prompt*.md
-eval/*prompt*.json
+# --- prompt sets and prompt text (eval inputs; still used by the run) --------
+# Every JSON directly under eval/ is a prompt set, so the rule is the directory, not a
+# name pattern: an ad-hoc set added later is excluded by default rather than by memory.
+# (Generated JSON such as convergence reports lives under eval/outputs/, ignored below.)
+eval/*.json
+eval/*.md
+!eval/EVAL_DESIGN.md
 
 # --- caption materials + anything that quotes captions or tag literals -------
 # The profile implementation, its config and the verifier are withheld too: they

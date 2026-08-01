@@ -38,6 +38,9 @@ def parse_args():
     p.add_argument("--usability_json", default=f"{HERE}/usability_set_v2.json")
     p.add_argument("--style_swap_json", default=f"{HERE}/style_swap_set.json")
     p.add_argument("--outdir", default=f"{HERE}/outputs")
+    p.add_argument("--out_set", default=None,
+                   help="output subdirectory for the prompt-set images (default: the set's meta "
+                        "set_name, else 'usability'). Keeps ad-hoc sets out of the frozen set's dir.")
     p.add_argument("--tiers", nargs="*", type=int, default=None, help="override resolution tiers (usability)")
     p.add_argument("--ids", nargs="*", default=None, help="only these prompt ids")
     p.add_argument("--attn_mode", default="torch", choices=["torch", "flash", "sageattn", "xformers"])
@@ -66,12 +69,13 @@ def build_jobs(args):
         meta = spec["meta"]
         sweep_groups = set(meta.get("sweep_groups", []))
         default_tier = meta.get("default_tier", 1024)
+        set_dir = args.out_set or meta.get("set_name", "usability")
         for p in spec["prompts"]:
             # the full resolution sweep applies only to sweep_groups; others get the default tier
             tiers = args.tiers or (meta["resolution_tiers"] if p["group"] in sweep_groups else [default_tier])
             for tier in tiers:
                 w, h = dims_for(p["aspect"], tier)
-                jobs.append(("usability", f"{p['id']}_{tier}", p["prompt"], p["seed"], w, h,
+                jobs.append((set_dir, f"{p['id']}_{tier}", p["prompt"], p["seed"], w, h,
                              {"base_id": p["id"], "group": p["group"], "label": p["label"],
                               "tier": tier, "aspect": p["aspect"]}))
     if args.which in ("style_swap", "both"):
@@ -148,8 +152,8 @@ def main():
                      "lora": args.lora, "lora_multiplier": args.lora_multiplier,
                      "set": set_name, "gpu": torch.cuda.get_device_name(0),
                      "torch": torch.__version__, "dtype": "bf16",
-                     "eval_set_version": (u_spec["meta"]["version"] if set_name == "usability"
-                                          else json.load(open(args.style_swap_json))["meta"]["version"]),
+                     "eval_set_version": (json.load(open(args.style_swap_json))["meta"]["version"]
+                                          if set_name == "style_swap" else u_spec["meta"]["version"]),
                      "updated_at": time.strftime("%Y-%m-%d %H:%M:%S")})
         with open(log_path, "w") as f:
             json.dump(prev, f, ensure_ascii=False, indent=1)

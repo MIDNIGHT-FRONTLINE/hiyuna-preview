@@ -21,7 +21,13 @@ TE=$DS/models_smoke/text_encoders/qwen3vl_4b_bf16.safetensors
 MATERIALS=$PREVIEW/caption/preview_materials.sqlite
 SYNTH_CFG=$PREVIEW/caption/caption_synth_preview_config.json
 
-EPOCHS=5                    # gate change 2026-07-31: run 3..5 unattended, page each boundary
+# 2026-07-31: run unattended, page at every boundary. 2026-08-01: extended 5 -> 10 after the
+# epoch-3 convergence delta came in at 0.96 of the previous epoch's, i.e. still moving.
+EPOCHS=10
+
+# Epochs after which the ad-hoc neutral rating ladder is run, retroactively over every epoch
+# checkpoint from 2 up to that point. Idempotent, so a re-run of the orchestrator is cheap.
+ADHOC_EPOCHS="5 10"
 
 # In-epoch checkpointing. save_last_n_steps is a STEP WINDOW, not a count: with a 500-step
 # interval, a 500-step window retains exactly the two newest saves (see
