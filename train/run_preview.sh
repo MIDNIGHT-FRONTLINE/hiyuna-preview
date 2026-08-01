@@ -91,6 +91,15 @@ for (( E=1; E<=EPOCHS; E++ )); do
       || log "epoch $E convergence delta FAILED (non-fatal)"
   fi
   log "=== EPOCH_${E}_PAGE_READY: $EVAL/outputs/review_ep$E.html ==="
+
+  # ad-hoc neutral rating ladder at the configured marks, retroactive over ep2..epE
+  for MARK in $ADHOC_EPOCHS; do
+    if [ "$E" -eq "$MARK" ]; then
+      ADHOC=(); for (( K=2; K<=E; K++ )); do ADHOC+=("ep$K"); done
+      log "=== adhoc neutral rating ladder at ep$E over ${ADHOC[*]} ==="
+      bash "$EVAL/run_adhoc_rating.sh" "${ADHOC[@]}" || log "adhoc rating FAILED (non-fatal)"
+    fi
+  done
 done
 
 # ---- base reference last (GPU is free; does not delay any epoch page) ----

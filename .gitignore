@@ -45,6 +45,12 @@ logs/
 # --- generated eval images, thumbnails, review pages -----------------------
 eval/outputs/
 
+# --- cross-session handover notes (NEVER commit) ----------------------------
+# Local absolute paths, dataset internals and unpublished judgements. Listed
+# ahead of any broader rule so nothing can re-include it.
+memory.md
+/memory.md
+
 # --- python ----------------------------------------------------------------
 __pycache__/
 *.py[cod]
