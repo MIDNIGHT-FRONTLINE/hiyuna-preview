@@ -46,6 +46,10 @@ def parse_args():
     p.add_argument("--attn_mode", default="torch", choices=["torch", "flash", "sageattn", "xformers"])
     p.add_argument("--lora", nargs="*", default=None, help="LoRA weight file(s) to merge (task 3 verification)")
     p.add_argument("--lora_multiplier", nargs="*", type=float, default=None)
+    p.add_argument("--steps", type=int, default=None,
+                   help="override the set's step count (Turbo runs few-step, e.g. 8)")
+    p.add_argument("--cfg", type=float, default=None,
+                   help="override guidance scale (Turbo is CFG-free, i.e. 0)")
     p.add_argument("--overwrite", action="store_true")
     return p.parse_args()
 
@@ -103,7 +107,13 @@ def main():
 
     # defaults (shared by both sets)
     u_spec = json.load(open(args.usability_json))
-    defaults = u_spec["meta"]["inference_defaults"]
+    defaults = dict(u_spec["meta"]["inference_defaults"])
+    # Turbo is a distilled few-step, CFG-free model, so its runs override the set's
+    # RAW-model defaults. The prompts and seeds stay frozen either way.
+    if args.steps is not None:
+        defaults["steps"] = args.steps
+    if args.cfg is not None:
+        defaults["cfg"] = args.cfg
 
     todo = []
     for set_name, pid, prompt, seed, w, h, m in jobs:
